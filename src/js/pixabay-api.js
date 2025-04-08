@@ -1,36 +1,28 @@
 import axios from 'axios';
 
-const API_KEY = '49186769-dabefba962826c776b77806d1';
-const BASE_URL = 'https://pixabay.com/api/';
-let PER_PAGE = 15;
-let page = 1;
+const API_KEY = '49366539-6fd412d088ca04dcc1c9b4bd7';
 
-// Функція для отримання зображень
-export async function searchImages(query) {
+let per_page = 15;
+
+
+export const fetchImages = async (searchText, page) => {
   try {
-    const response = await axios.get(BASE_URL, {
+    const response = await axios.get('https://pixabay.com/api/', {
       params: {
         key: API_KEY,
-        q: query,
+        q: searchText,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: true,
-        per_page: PER_PAGE,
+        per_page: per_page,
         page: page,
-      },
+      }
     });
-
-    page += 1;
-
-    // Повертаємо масив зображень + загальну кількість результатів
-    return { images: response.data.hits, totalHits: response.data.totalHits };
+    
+    return response.data;
+    
   } catch (error) {
-    console.error('Error fetching images:', error.message);
-    return { images: [], totalHits: 0 };
+    console.error('Error fetching images:', error);
+    return [];  
   }
-}
-
-// Скидання лічильника сторінок
-export function resetPage() {
-  page = 1;
 }

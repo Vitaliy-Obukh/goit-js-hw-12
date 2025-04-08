@@ -1,70 +1,87 @@
-// Функції інтерфейсу
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
-// Ініціалізація SimpleLightbox
-const lightbox = new SimpleLightbox('.gallery a', {
-  captions: true,
+let lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-// Функція для створення карток зображень
-export function createImageMarkup(images) {
-  return images
+export function showLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.style.display = 'inline-block'; 
+    }
+}
+
+export function hideLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.style.display = 'none'; 
+    }
+};
+
+export const clearGallery = () => {
+  const gallery = document.querySelector('.gallery');
+  gallery.innerHTML = '';  
+  smoothScroll(); 
+};
+
+export function renderImages(images) {
+  const gallery = document.querySelector('.gallery');
+
+  gallery.insertAdjacentHTML('beforeend', images
     .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => `
+      ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
       <li class="gallery-item">
         <a class="gallery-link" href="${largeImageURL}">
           <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" />
         </a>
-        <div class="thumb-block">
-          <div class="block"><h2 class="tittle">Likes</h2><p class="amount">${likes}</p></div>
-          <div class="block"><h2 class="tittle">Views</h2><p class="amount">${views}</p></div>
-          <div class="block"><h2 class="tittle">Comments</h2><p class="amount">${comments}</p></div>
-          <div class="block"><h2 class="tittle">Downloads</h2><p class="amount">${downloads}</p></div>
-        </div>
+        <div class="info">
+                <p><b>Likes</b><br>${likes}</p>
+                <p><b>Views</b><br>${views}</p>
+                <p><b>Comments</b><br>${comments}</p>
+                <p><b>Downloads</b><br>${downloads}</p>
+            </div>
       </li>`
-    )
-    .join('');
+    ).join(''));
+
+  lightbox.refresh();
 }
 
-// Функція для оновлення галереї
-export function updateGallery(images) {
-  const gallery = document.querySelector('.gallery');
-  gallery.insertAdjacentHTML('beforeend', createImageMarkup(images));
-  lightbox.refresh(); // Оновлюємо SimpleLightbox після додавання нових зображень
-  smoothScroll(); // додаємо скролл
-}
-
-export function showNoResultsMessage(message) {
-  iziToast.error({
-    title: 'Error',
-    message: message,
-    position: 'topRight',
-  });
+export function initializeLightbox() {
+  if (!lightbox) {
+    lightbox = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionDelay: 250,
+    });
+  }
+  lightbox.refresh(); 
 }
 
 export function smoothScroll() {
-  const firstCard = document.querySelector('.gallery-item');
+    const firstCard = document.querySelector('.gallery-item');
 
-  if (firstCard) {
-    const cardHeight = firstCard.getBoundingClientRect().height;
+    if (firstCard) {
+        const cardHeight = firstCard.getBoundingClientRect().height;
 
-    window.scrollBy({
-      top: cardHeight * 2,
-      left: 0,
-      behavior: 'smooth',
-    });
-  }
+        window.scrollBy({
+            top: cardHeight * 2,
+            left: 0,
+            behavior: "smooth",
+        });
+    }
 }
+
+export function showloadMore() {
+    const loadMore = document.querySelector('.load-more');
+    if (loadMore) {
+        loadMore.style.display = 'flex'; 
+    }
+}
+
+export function hideloadMore() {
+    const loadMore = document.querySelector('.load-more');
+    if (loadMore) {
+        loadMore.style.display = 'none'; 
+    }
+};
